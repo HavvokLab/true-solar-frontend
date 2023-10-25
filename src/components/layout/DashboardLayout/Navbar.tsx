@@ -1,3 +1,5 @@
+import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
+import { authState, kibanaCredentialState } from "@/store";
 import {
   Button,
   Group,
@@ -9,10 +11,8 @@ import {
   rem,
 } from "@mantine/core";
 import { IconDeviceDesktopAnalytics, IconServerCog } from "@tabler/icons-react";
+import { useResetRecoilState } from "recoil";
 import { LinksGroup } from "./NavbarLinkGroup";
-import { useResetRecoilState, useSetRecoilState } from "recoil";
-import { authState, kibanaCredentialState } from "@/store";
-import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 
 const data = [
   {
@@ -72,7 +72,7 @@ const Navbar = () => {
       className={classes.navbar}
     >
       <MavBar.Section className={classes.header}>
-        <Group position="left">
+        <Group position="center">
           <Image
             src="/true-logo.png"
             alt="true-logo"

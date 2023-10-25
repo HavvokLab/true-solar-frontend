@@ -2,6 +2,8 @@ import { getKibanaCredentialAPI } from "@/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 import AuthPage from "@/pages/auth";
+import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
+import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
 import { authState, kibanaCredentialState } from "@/store";
 import axios, { AxiosRequestConfig } from "axios";
@@ -91,7 +93,7 @@ const Routes = () => {
     }
   };
 
-  console.log("kibanaCredential", kibanaCredential)
+  console.log("kibanaCredential", kibanaCredential);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -102,6 +104,11 @@ const Routes = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
+        <Route
+          index
+          element={<Navigate to="/login" />}
+        />
+
         <Route
           path="dashboard"
           element={
@@ -121,6 +128,16 @@ const Routes = () => {
           <Route
             path="summary"
             element={<SummaryPage />}
+          />
+
+          <Route
+            path="performance-alarm"
+            element={<PerformanceAlarmPage />}
+          />
+
+          <Route
+            path="report"
+            element={<ReportPage />}
           />
         </Route>
 
