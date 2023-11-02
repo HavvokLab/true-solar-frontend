@@ -2,6 +2,7 @@ import { getKibanaCredentialAPI } from "@/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 import AuthPage from "@/pages/auth";
+import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
 import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
@@ -11,6 +12,7 @@ import { useEffect } from "react";
 import { useQuery } from "react-query";
 import {
   Navigate,
+  Outlet,
   Route,
   RouterProvider,
   createBrowserRouter,
@@ -139,6 +141,16 @@ const Routes = () => {
             path="report"
             element={<ReportPage />}
           />
+
+          <Route
+            path="config"
+            element={<Outlet />}
+          >
+            <Route
+              path="performance-alarm"
+              element={<PerformanceAlarmConfigPage />}
+            />
+          </Route>
         </Route>
 
         <Route

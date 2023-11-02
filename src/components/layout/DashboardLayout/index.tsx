@@ -8,6 +8,7 @@ const DashboardLayout = () => {
       w="100vw"
       h="100vh"
       navbar={<Navbar />}
+      p="md"
     >
       <Outlet />
     </AppShell>

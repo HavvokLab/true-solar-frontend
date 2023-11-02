@@ -94,7 +94,12 @@ const Navbar = () => {
           px="xs"
           pt="sm"
         >
-          <Button onClick={handleLogout}>Logout</Button>
+          <Button
+            color="red"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </Stack>
       </MavBar.Section>
     </MavBar>
