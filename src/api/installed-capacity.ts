@@ -6,5 +6,5 @@ export const getInstalledCapacityAPI = async () => {
 }
 
 export const updateInstalledCapacityAPI = async (body: InstalledCapacity) => {
-    return fetchPrivate.put("/installed-capacity", body)
+    return fetchPrivate.put<Response>("/installed-capacity", body)
 }

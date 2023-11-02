@@ -1,35 +1,43 @@
 import {
-    getInstalledCapacityAPI,
-    updateInstalledCapacityAPI,
-} from "@/api/installed-capacity";
-import { InstalledCapacity } from "@/types";
+  getInstalledCapacityAPI,
+  getPerformanceAlarmLowAPI,
+  updateInstalledCapacityAPI,
+  updatePerformanceAlarmLowAPI,
+} from "@/api";
+import { InstalledCapacity, PerformanceAlarm } from "@/types";
 import {
-    Button,
-    Divider,
-    Group,
-    NumberInput,
-    Paper,
-    Stack,
-    Title,
-    createStyles,
+  Button,
+  Divider,
+  Group,
+  NumberInput,
+  Paper,
+  Stack,
+  Title,
+  createStyles,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { Icon24Hours, IconActivity, IconAlarmAverage, IconHourglass, IconPercentage } from "@tabler/icons-react";
+import {
+  Icon24Hours,
+  IconActivity,
+  IconAlarmAverage,
+  IconHourglass,
+  IconPercentage,
+} from "@tabler/icons-react";
 import { useMutation, useQuery } from "react-query";
 
 const PerformanceAlarmConfigPage = () => {
   const { classes } = useStyles();
 
   // |=> Installed Capacity
-  const form = useForm<InstalledCapacity>({
+  const installedCapacityForm = useForm<InstalledCapacity>({
     validate: {
       efficiency_factor: (value) => {
-        if (value < 0) return "efficiency factor must be greater than 0";
+        if (value < 0) return "Efficiency Factor must be greater than 0";
         return undefined;
       },
       focus_hour: (value) => {
-        if (value < 0) return "focus hour must be greater than 0";
+        if (value < 0) return "Average Daily Production Hours must be greater than 0";
         return undefined;
       },
     },
@@ -41,7 +49,7 @@ const PerformanceAlarmConfigPage = () => {
     {
       onSuccess: ({ data }) => {
         const result = data.result;
-        if (data.success && result) form.setValues(result);
+        if (data.success && result) installedCapacityForm.setValues(result);
       },
       onError: () => {
         notifications.show({
@@ -74,6 +82,67 @@ const PerformanceAlarmConfigPage = () => {
 
   const onUpdateInstalledCapacity = async (fields: InstalledCapacity) =>
     await updateInstalledCapacity(fields);
+
+  // |=> Low Performance Alarm
+  const performanceAlarmLowForm = useForm<PerformanceAlarm>({
+    validate: {
+      percentage: (value) => {
+        if (!value || value < 0 || value > 100)
+          return "KWh Production Percentage must be in range 1-100";
+        return undefined;
+      },
+      hit_day: (value) => {
+        if (!value || value < 0) return "Hit Days must be greater than 0";
+        return undefined;
+      },
+      duration: (value) => {
+        if (!value || value < 0) return "Range Days must be greater than 0";
+        return undefined;
+      },
+    },
+  });
+
+  const { refetch: rePerformanceAlarmLow } = useQuery(
+    ["get-performance-alarm-low"],
+    getPerformanceAlarmLowAPI,
+    {
+      onSuccess: ({ data }) => {
+        const result = data.result;
+        if (data.success && result) performanceAlarmLowForm.setValues(result);
+      },
+      onError: () => {
+        notifications.show({
+          color: "red",
+          title: "Failure",
+          message: "Failed to fetch performance alarm low",
+        });
+      },
+    }
+  );
+
+  const {
+    mutateAsync: updatePerformanceAlarmLow,
+    isLoading: loadUpdatePerformanceAlarmLow,
+  } = useMutation(["update-performance-alarm-low"], updatePerformanceAlarmLowAPI, {
+    onSuccess: () => {
+      rePerformanceAlarmLow();
+      notifications.show({
+        color: "green",
+        title: "Successful",
+        message: "Performance alarm low updated",
+      });
+    },
+    onError: () => {
+      notifications.show({
+        color: "red",
+        title: "Failure",
+        message: "Failed to update performance alarm low",
+      });
+    },
+  });
+
+  const onUpdatePerformanceAlarmLow = async (fields: PerformanceAlarm) =>
+    updatePerformanceAlarmLow(fields);
 
   return (
     <Paper
@@ -112,7 +181,7 @@ const PerformanceAlarmConfigPage = () => {
                 <Title fz="xl">Installed Capacity</Title>
               </Group>
               <Divider />
-              <form onSubmit={form.onSubmit(onUpdateInstalledCapacity)}>
+              <form onSubmit={installedCapacityForm.onSubmit(onUpdateInstalledCapacity)}>
                 <Stack
                   px="sm"
                   py="sm"
@@ -131,7 +200,7 @@ const PerformanceAlarmConfigPage = () => {
                         />
                       </Group>
                     }
-                    {...form.getInputProps("focus_hour")}
+                    {...installedCapacityForm.getInputProps("focus_hour")}
                   />
 
                   <NumberInput
@@ -149,14 +218,14 @@ const PerformanceAlarmConfigPage = () => {
                         />
                       </Group>
                     }
-                    {...form.getInputProps("efficiency_factor")}
+                    {...installedCapacityForm.getInputProps("efficiency_factor")}
                   />
 
                   <Button
                     type="submit"
                     loading={loadUpdateInstalledCapacity}
                   >
-                    Update Installed Capacity
+                    Update Configuration
                   </Button>
                 </Stack>
               </form>
@@ -179,7 +248,9 @@ const PerformanceAlarmConfigPage = () => {
                 <Title fz="xl">Low Performance Alarm</Title>
               </Group>
               <Divider />
-              <form>
+              <form
+                onSubmit={performanceAlarmLowForm.onSubmit(onUpdatePerformanceAlarmLow)}
+              >
                 <Stack
                   px="sm"
                   py="sm"
@@ -200,11 +271,13 @@ const PerformanceAlarmConfigPage = () => {
                         />
                       </Group>
                     }
+                    {...performanceAlarmLowForm.getInputProps("percentage")}
                   />
 
                   <NumberInput
                     label="Hit Days"
                     hideControls
+                    min={1}
                     rightSection={
                       <Group
                         pr="sm"
@@ -216,11 +289,13 @@ const PerformanceAlarmConfigPage = () => {
                         />
                       </Group>
                     }
+                    {...performanceAlarmLowForm.getInputProps("hit_day")}
                   />
 
                   <NumberInput
                     label="Range Days"
                     hideControls
+                    min={1}
                     rightSection={
                       <Group
                         pr="sm"
@@ -232,9 +307,15 @@ const PerformanceAlarmConfigPage = () => {
                         />
                       </Group>
                     }
+                    {...performanceAlarmLowForm.getInputProps("duration")}
                   />
 
-                  <Button>Update</Button>
+                  <Button
+                    type="submit"
+                    loading={loadUpdatePerformanceAlarmLow}
+                  >
+                    Update Configuration
+                  </Button>
                 </Stack>
               </form>
             </Stack>
