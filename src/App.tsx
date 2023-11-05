@@ -4,6 +4,7 @@ import Routes from "./routes";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Notifications } from "@mantine/notifications";
+import { ModalsProvider } from "@mantine/modals";
 
 const client = new QueryClient();
 
@@ -17,8 +18,10 @@ function App() {
           withGlobalStyles
           withNormalizeCSS
         >
-          <Routes />
-          <Notifications position="top-right" />
+          <ModalsProvider>
+            <Routes />
+            <Notifications position="top-right" />
+          </ModalsProvider>
         </MantineProvider>
       </QueryClientProvider>
     </RecoilRoot>

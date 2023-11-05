@@ -1,7 +1,7 @@
 import { getKibanaCredentialAPI } from "@/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 import AuthPage from "@/pages/auth";
+import HuaweiConfigPage from "@/pages/config/huawei";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
 import ReportPage from "@/pages/dashboard/report";
@@ -18,7 +18,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 interface ICustomRoute {
   auth: boolean;
@@ -149,6 +149,11 @@ const Routes = () => {
             <Route
               path="performance-alarm"
               element={<PerformanceAlarmConfigPage />}
+            />
+
+            <Route
+              path="huawei"
+              element={<HuaweiConfigPage />}
             />
           </Route>
         </Route>
