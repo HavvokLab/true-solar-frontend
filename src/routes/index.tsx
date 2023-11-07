@@ -1,11 +1,15 @@
 import { getKibanaCredentialAPI } from "@/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import AuthPage from "@/pages/auth";
+import GrowattConfigPage from "@/pages/config/growatt";
 import HuaweiConfigPage from "@/pages/config/huawei";
+import KstarConfigPage from "@/pages/config/kstar";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
+import SolarmanConfigPage from "@/pages/config/solarman";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
 import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
+import NotFoundPage from "@/pages/not-found";
 import { authState, kibanaCredentialState } from "@/store";
 import axios, { AxiosRequestConfig } from "axios";
 import { useEffect } from "react";
@@ -155,6 +159,21 @@ const Routes = () => {
               path="huawei"
               element={<HuaweiConfigPage />}
             />
+
+            <Route
+              path="kstar"
+              element={<KstarConfigPage />}
+            />
+
+            <Route
+              path="solarman"
+              element={<SolarmanConfigPage />}
+            />
+
+            <Route
+              path="growatt"
+              element={<GrowattConfigPage />}
+            />
           </Route>
         </Route>
 
@@ -168,6 +187,11 @@ const Routes = () => {
               <AuthPage />
             </AuthRoute>
           }
+        />
+
+        <Route
+          path="*"
+          element={<NotFoundPage />}
         />
       </Route>
     )
