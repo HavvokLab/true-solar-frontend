@@ -51,6 +51,11 @@ const items = [
         icon: <Dashboard />,
         title: "Monthly Production",
       },
+      {
+        href: "/dashboard/dailyProduction",
+        icon: <Dashboard />,
+        title: "Daily Production",
+      },
     ],
   },
   {

@@ -13,6 +13,7 @@ import SummaryDashboard from "./views/summaryDashboard";
 import AlarmDashboard from "./views/alarmDashboard";
 import ReportDashboard from "./views/reportDashboard";
 import MonthlyProduction from "./views/monthlyProduction";
+import DailyProduction from "./views/dailyProduction";
 import ConfigWeb from "./views/configWeb";
 import Log from "./views/log";
 import PageNotFound from "./views/pageNotFound";
@@ -103,6 +104,11 @@ function App() {
           path="/dashboard/monthlyProduction"
           authUser={isAuthenticated}
           component={MonthlyProduction}
+        />
+        <PrivateRoute
+          path="/dashboard/dailyProduction"
+          authUser={isAuthenticated}
+          component={DailyProduction}
         />
         <Redirect exact from="/dashboard" to="/dashboard/summary" />
         <Redirect exact from="/config" to="/config/web" />
