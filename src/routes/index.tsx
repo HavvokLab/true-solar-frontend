@@ -6,6 +6,8 @@ import HuaweiConfigPage from "@/pages/config/huawei";
 import KstarConfigPage from "@/pages/config/kstar";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
 import SolarmanConfigPage from "@/pages/config/solarman";
+import DailyProductionPage from "@/pages/dashboard/daily-production";
+import MonthlyProductionPage from "@/pages/dashboard/monthly-production";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
 import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
@@ -144,6 +146,16 @@ const Routes = () => {
           <Route
             path="report"
             element={<ReportPage />}
+          />
+
+          <Route
+            path="daily-production"
+            element={<DailyProductionPage />}
+          />
+
+          <Route
+            path="monthly-production"
+            element={<MonthlyProductionPage />}
           />
 
           <Route

@@ -1,10 +1,12 @@
 import axios from "axios"
 import { isAxiosError } from "axios"
 
+const BASE_URL = "https://truesolar.truecorp.co.th/api"
+
 export const fetchPrivate = (() => {
 
     const client = axios.create({
-        baseURL: import.meta.env.VITE_BASE_URL,
+        baseURL: BASE_URL,
     })
 
     client.interceptors.request.use((config) => {
@@ -20,7 +22,7 @@ export const fetchPrivate = (() => {
     client.interceptors.response.use(
         (response) => response,
         (error) => {
-            
+
             if (isAxiosError(error) && error?.response?.status === 401) {
                 localStorage.removeItem("atkn")
                 localStorage.removeItem("texp")
@@ -36,6 +38,6 @@ export const fetchPrivate = (() => {
 
 export const fetchPublic = (() => {
     return axios.create({
-        baseURL: import.meta.env.VITE_BASE_URL,
+        baseURL: BASE_URL,
     })
 })()
