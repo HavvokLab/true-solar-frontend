@@ -15,12 +15,14 @@ import {
   createStyles,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 import { useMutation } from "react-query";
 import { useSetRecoilState } from "recoil";
 
 const AuthPage = () => {
   const { classes } = useStyles();
-  const setAuth = useSetRecoilState(authState)
+  const setAuth = useSetRecoilState(authState);
   const [_token, setToken] = useTokenLocalStorage();
   const [_expiredAt, setExpiredAt] = useExpiredLocalStorage();
   const form = useForm<LoginRequest>({
@@ -32,12 +34,19 @@ const AuthPage = () => {
 
   const { mutateAsync, isLoading } = useMutation(loginAPI, {
     onSuccess: ({ data }) => {
-      const result = data.result
+      const result = data.result;
       if (data.success && result) {
         setToken(result.access_token);
         setExpiredAt(result.expired_at);
-        setAuth(true)
+        setAuth(true);
       }
+    },
+    onError: () => {
+      notifications.show({
+        title: "Failure",
+        message: "Login failed",
+        color: "red",
+      });
     },
   });
 

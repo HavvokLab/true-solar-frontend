@@ -1,7 +1,8 @@
 import axios from "axios"
 import { isAxiosError } from "axios"
 
-const BASE_URL = "https://truesolar.truecorp.co.th/api"
+// const BASE_URL = "https://truesolar.truecorp.co.th/api"
+const BASE_URL = import.meta.env.VITE_BASE_URL
 
 export const fetchPrivate = (() => {
 

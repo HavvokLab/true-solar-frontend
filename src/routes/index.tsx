@@ -77,6 +77,7 @@ const Routes = () => {
 
     try {
       const config: AxiosRequestConfig = {
+        baseURL: "https://truesolar.truecorp.co.th",
         method: "POST",
         url: "/k/internal/security/login",
         withCredentials: true,
@@ -100,8 +101,6 @@ const Routes = () => {
       console.error(err);
     }
   };
-
-  console.log("kibanaCredential", kibanaCredential);
 
   useEffect(() => {
     const controller = new AbortController();
