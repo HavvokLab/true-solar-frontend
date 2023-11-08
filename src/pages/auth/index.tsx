@@ -1,4 +1,4 @@
-import { getKibanaCredentialAPI, loginAPI } from "@/api";
+import { getKibanaCredentialWithTokenAPI, loginAPI } from "@/api";
 import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 import { authState } from "@/store";
 import { LoginRequest } from "@/types";
@@ -40,7 +40,9 @@ const AuthPage = () => {
           setToken(result.access_token);
           setExpiredAt(result.expired_at);
 
-          const { data: kibanaData } = await getKibanaCredentialAPI();
+          const { data: kibanaData } = await getKibanaCredentialWithTokenAPI(
+            result.access_token
+          );
           const kibanaResult = kibanaData.result;
           if (kibanaData.success && kibanaResult) {
             const config: AxiosRequestConfig = {
