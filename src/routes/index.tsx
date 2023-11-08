@@ -63,9 +63,35 @@ const Routes = () => {
   const [kibanaCredential, setKibanaCredential] = useRecoilState(kibanaCredentialState);
 
   useQuery(["kibana-credential"], getKibanaCredentialAPI, {
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       const result = data.result;
       if (data.success && result) {
+        try {
+          const config: AxiosRequestConfig = {
+            baseURL: "https://truesolar.truecorp.co.th",
+            method: "POST",
+            url: "/k/internal/security/login",
+            withCredentials: true,
+            headers: {
+              "kbn-xsrf": "true",
+              "Content-Type": "application/json",
+            },
+            data: {
+              providerType: "basic",
+              providerName: "basic",
+              currentURL: "/k/login?next=%2F",
+              params: {
+                username: result.username,
+                password: result.password,
+              },
+            },
+          };
+
+          await axios.request(config);
+        } catch (err) {
+          console.error(err);
+        }
+
         setAuth(true);
         setKibanaCredential(result);
       }
