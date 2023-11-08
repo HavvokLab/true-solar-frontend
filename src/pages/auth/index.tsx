@@ -1,4 +1,4 @@
-import { loginAPI } from "@/api";
+import { getKibanaCredentialAPI, loginAPI } from "@/api";
 import { useExpiredLocalStorage, useTokenLocalStorage } from "@/hooks";
 import { authState } from "@/store";
 import { LoginRequest } from "@/types";
@@ -16,6 +16,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import axios, { AxiosRequestConfig } from "axios";
 import { useMutation } from "react-query";
 import { useSetRecoilState } from "recoil";
 
@@ -32,11 +33,46 @@ const AuthPage = () => {
   });
 
   const { mutateAsync, isLoading } = useMutation(loginAPI, {
-    onSuccess: ({ data }) => {
-      const result = data.result;
-      if (data.success && result) {
-        setToken(result.access_token);
-        setExpiredAt(result.expired_at);
+    onSuccess: async ({ data }) => {
+      try {
+        const result = data.result;
+        if (data.success && result) {
+          setToken(result.access_token);
+          setExpiredAt(result.expired_at);
+
+          const { data: kibanaData } = await getKibanaCredentialAPI();
+          const kibanaResult = kibanaData.result;
+          if (kibanaData.success && kibanaResult) {
+            const config: AxiosRequestConfig = {
+              baseURL: "https://truesolar.truecorp.co.th",
+              method: "POST",
+              url: "/k/internal/security/login",
+              withCredentials: true,
+              headers: {
+                "kbn-xsrf": "true",
+                "Content-Type": "application/json",
+              },
+              data: {
+                providerType: "basic",
+                providerName: "basic",
+                currentURL: "/k/login?next=%2F",
+                params: {
+                  username: kibanaResult.username,
+                  password: kibanaResult.password,
+                },
+              },
+            };
+
+            await axios.request(config);
+          }
+        }
+      } catch (err) {
+        notifications.show({
+          title: "Failure",
+          message: "Login failed",
+          color: "red",
+        });
+      } finally {
         setAuth(true);
       }
     },
