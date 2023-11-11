@@ -12,7 +12,7 @@ export const fetchPrivate = (() => {
 
     client.interceptors.request.use((config) => {
         let token = localStorage.getItem("atkn")
-        if (!token) throw new Error("unauthorized")
+        if (!token || !token.trim().length) throw new Error("unauthorized")
         else token = token.replace(/"/g, "")
 
         config.headers.Authorization = `Bearer ${token}`
