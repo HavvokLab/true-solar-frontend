@@ -15,7 +15,9 @@ import {
   createStyles,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import axios, { AxiosRequestConfig } from "axios";
+import { useMutation } from "react-query";
 import { useSetRecoilState } from "recoil";
 
 const AuthPage = () => {
@@ -30,108 +32,59 @@ const AuthPage = () => {
     },
   });
 
-  // const { isLoading } = useMutation(loginAPI, {
-  //   onSuccess: async ({ data }) => {
-  //     try {
-  //       const result = data.result;
-  //       if (data.success && result) {
-  //         setToken(result.access_token);
-  //         setExpiredAt(result.expired_at);
+  const { mutate, isLoading } = useMutation(["login"], loginAPI, {
+    onSuccess: async ({ data }) => {
+      const result = data.result;
+      if (!data.success || !result) {
+        notifications.show({
+          title: "Failure",
+          message: "Login failed",
+          color: "red",
+        });
+        return;
+      }
 
-  //         const { data: kibanaData } = await getKibanaCredentialWithTokenAPI(
-  //           result.access_token
-  //         );
-  //         const kibanaResult = kibanaData.result;
-  //         if (kibanaData.success && kibanaResult) {
-  //           const config: AxiosRequestConfig = {
-  //             baseURL: "https://truesolar.truecorp.co.th",
-  //             method: "POST",
-  //             url: "/k/internal/security/login",
-  //             withCredentials: true,
-  //             headers: {
-  //               "kbn-xsrf": "true",
-  //               "Content-Type": "application/json",
-  //             },
-  //             data: {
-  //               providerType: "basic",
-  //               providerName: "basic",
-  //               currentURL: "/k/login?next=%2F",
-  //               params: {
-  //                 username: kibanaResult.username,
-  //                 password: kibanaResult.password,
-  //               },
-  //             },
-  //           };
+      setToken(result.access_token);
+      setExpiredAt(result.expired_at);
+      getKibanaCredentialWithTokenAPI(result.access_token)
+        .then(async ({ data }) => {
+          const kibanaResult = data.result;
+          if (data.success && kibanaResult) {
+            const config: AxiosRequestConfig = {
+              baseURL: "https://truesolar.truecorp.co.th",
+              method: "POST",
+              url: "/k/internal/security/login",
+              withCredentials: true,
+              headers: {
+                "kbn-xsrf": "true",
+                "Content-Type": "application/json",
+              },
+              data: {
+                providerType: "basic",
+                providerName: "basic",
+                currentURL: "/k/login?next=%2F",
+                params: {
+                  username: kibanaResult.username,
+                  password: kibanaResult.password,
+                },
+              },
+            };
 
-  //           await axios.request(config);
-  //         }
-  //       }
-  //     } catch (err) {
-  //       notifications.show({
-  //         title: "Failure",
-  //         message: "Login failed",
-  //         color: "red",
-  //       });
-  //     } finally {
-  //       setAuth(true);
-  //     }
-  //   },
-  //   onError: () => {
-  //     notifications.show({
-  //       title: "Failure",
-  //       message: "Login failed",
-  //       color: "red",
-  //     });
-  //   },
-  // });
-
-  const onLogin = (fields: LoginRequest) => {
-    try {
-      loginAPI(fields)
-        .then(({ data }) => {
-          const result = data.result;
-          if (data.success && result) {
-            setToken(result.access_token);
-            setExpiredAt(result.expired_at);
-
-            getKibanaCredentialWithTokenAPI(result.access_token)
-              .then(async ({ data }) => {
-                const kibanaResult = data.result;
-                if (data.success && kibanaResult) {
-                  const config: AxiosRequestConfig = {
-                    baseURL: "https://truesolar.truecorp.co.th",
-                    method: "POST",
-                    url: "/k/internal/security/login",
-                    withCredentials: true,
-                    headers: {
-                      "kbn-xsrf": "true",
-                      "Content-Type": "application/json",
-                    },
-                    data: {
-                      providerType: "basic",
-                      providerName: "basic",
-                      currentURL: "/k/login?next=%2F",
-                      params: {
-                        username: kibanaResult.username,
-                        password: kibanaResult.password,
-                      },
-                    },
-                  };
-
-                  await axios.request(config);
-                  setAuth(true);
-                }
-              })
-              .catch((err) => {
-                throw err;
-              });
+            await axios.request(config);
+            setAuth(true);
           }
         })
-        .catch((err) => {
-          throw err;
+        .catch(() => {
+          notifications.show({
+            title: "Failure",
+            message: "Login failed",
+            color: "red",
+          });
         });
-    } catch (err) {}
-  };
+    },
+  });
+
+  const onSubmit = (fields: LoginRequest) => mutate(fields);
 
   return (
     <Container h="100vh">
@@ -168,7 +121,7 @@ const AuthPage = () => {
 
             <form
               className={classes.form}
-              onSubmit={form.onSubmit(onLogin)}
+              onSubmit={form.onSubmit(onSubmit)}
             >
               <Stack>
                 <TextInput
@@ -183,7 +136,12 @@ const AuthPage = () => {
                   {...form.getInputProps("password")}
                 />
 
-                <Button type="submit">Login</Button>
+                <Button
+                  type="submit"
+                  loading={isLoading}
+                >
+                  Login
+                </Button>
               </Stack>
             </form>
           </Stack>
