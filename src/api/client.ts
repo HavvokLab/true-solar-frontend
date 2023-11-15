@@ -1,8 +1,8 @@
 import axios from "axios"
 import { isAxiosError } from "axios"
 
-// const BASE_URL = "https://truesolar.truecorp.co.th/api"
-const BASE_URL = "http://localhost:3000/api"
+const BASE_URL = "https://truesolar.truecorp.co.th/api"
+// const BASE_URL = "http://localhost:3000/api"
 
 export const fetchPrivate = (() => {
 
