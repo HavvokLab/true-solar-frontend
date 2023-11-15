@@ -1,4 +1,6 @@
+import { getKibanaCredentialAPI } from "@/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { useExpiredLocalStorage } from "@/hooks";
 import AuthPage from "@/pages/auth";
 import GrowattConfigPage from "@/pages/config/growatt";
 import HuaweiConfigPage from "@/pages/config/huawei";
@@ -6,12 +8,16 @@ import KstarConfigPage from "@/pages/config/kstar";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
 import SolarmanConfigPage from "@/pages/config/solarman";
 import DailyProductionPage from "@/pages/dashboard/daily-production";
+import DataMonitoringPage from "@/pages/dashboard/data-monitoring";
 import MonthlyProductionPage from "@/pages/dashboard/monthly-production";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
 import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
 import NotFoundPage from "@/pages/not-found";
 import { authState } from "@/store";
+import { notifications } from "@mantine/notifications";
+import axios, { AxiosRequestConfig } from "axios";
+import { useEffect } from "react";
 import {
   Navigate,
   Outlet,
@@ -55,80 +61,62 @@ const ProtectRoute = ({ auth, redirectPath, children }: ICustomRoute) => {
 };
 
 const Routes = () => {
-  const [auth] = useRecoilState(authState);
-  // const [kibanaCredential, setKibanaCredential] = useRecoilState(kibanaCredentialState);
+  const [auth, setAuth] = useRecoilState(authState);
+  const [expired] = useExpiredLocalStorage();
 
-  // useQuery(["kibana-credential"], getKibanaCredentialAPI, {
-  //   onSuccess: async ({ data }) => {
-  //     const result = data.result;
-  //     if (data.success && result) {
-  //       try {
-  //         const config: AxiosRequestConfig = {
-  //           baseURL: "https://truesolar.truecorp.co.th",
-  //           method: "POST",
-  //           url: "/k/internal/security/login",
-  //           withCredentials: true,
-  //           headers: {
-  //             "kbn-xsrf": "true",
-  //             "Content-Type": "application/json",
-  //           },
-  //           data: {
-  //             providerType: "basic",
-  //             providerName: "basic",
-  //             currentURL: "/k/login?next=%2F",
-  //             params: {
-  //               username: result.username,
-  //               password: result.password,
-  //             },
-  //           },
-  //         };
+  const autoLogin = async () => {
+    if (!expired) return;
+    if (Date.now() >= expired.getTime()) return;
+    try {
+      getKibanaCredentialAPI()
+        .then(async ({ data }) => {
+          const kibanaResult = data.result;
+          if (data.success && kibanaResult) {
+            const config: AxiosRequestConfig = {
+              baseURL: "https://truesolar.truecorp.co.th",
+              method: "POST",
+              url: "/k/internal/security/login",
+              withCredentials: true,
+              headers: {
+                "kbn-xsrf": "true",
+                "Content-Type": "application/json",
+              },
+              data: {
+                providerType: "basic",
+                providerName: "basic",
+                currentURL: "/k/login?next=%2F",
+                params: {
+                  username: kibanaResult.username,
+                  password: kibanaResult.password,
+                },
+              },
+            };
 
-  //         await axios.request(config);
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
+            await axios.request(config);
+            setAuth(true);
+          }
+        })
+        .catch(() => {
+          notifications.show({
+            title: "Failure",
+            message: "Login failed, please sign in again.",
+            color: "red",
+          });
+        });
+    } catch (err) {
+      notifications.show({
+        title: "Failure",
+        message: "Login failed, please sign in again.",
+        color: "red",
+      });
+    }
+  };
 
-  //       setAuth(true);
-  //       setKibanaCredential(result);
-  //     }
-  //   },
-  // });
-
-  // const kibanaLogin = async () => {
-  //   if (!kibanaCredential) return;
-
-  //   try {
-  //     const config: AxiosRequestConfig = {
-  //       baseURL: "https://truesolar.truecorp.co.th",
-  //       method: "POST",
-  //       url: "/k/internal/security/login",
-  //       withCredentials: true,
-  //       headers: {
-  //         "kbn-xsrf": "true",
-  //         "Content-Type": "application/json",
-  //       },
-  //       data: {
-  //         providerType: "basic",
-  //         providerName: "basic",
-  //         currentURL: "/k/login?next=%2F",
-  //         params: {
-  //           username: kibanaCredential.username,
-  //           password: kibanaCredential.password,
-  //         },
-  //       },
-  //     };
-
-  //     await axios.request(config);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const controller = new AbortController();
-  //   kibanaLogin();
-  //   return () => controller.abort();
-  // }, [kibanaCredential]);
+  useEffect(() => {
+    const controller = new AbortController();
+    autoLogin();
+    return () => controller.abort();
+  }, []);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -177,6 +165,11 @@ const Routes = () => {
           <Route
             path="monthly-production"
             element={<MonthlyProductionPage />}
+          />
+
+          <Route
+            path="data-monitoring"
+            element={<DataMonitoringPage />}
           />
 
           <Route
