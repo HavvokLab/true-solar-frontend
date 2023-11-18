@@ -25,7 +25,7 @@ export type UpdateCityRequest = {
 
 export type CreateCityRequest = {
     code: string
-    name: string
+    city: string
     area?: string
 }
 

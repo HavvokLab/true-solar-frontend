@@ -1,8 +1,6 @@
-import { deleteKstarCredentialAPI, updateKstarCredentialAPI } from "@/api";
-import { OwnerOptions } from "@/data/owner";
-import { KstarCredential } from "@/types";
-import { validateOwner } from "@/utils/validate";
-import { Button, Flex, Modal, Select, Stack, Text, TextInput } from "@mantine/core";
+import { deleteCityAPI, updateCityAPI } from "@/api";
+import { SiteRegionMapping, UpdateCityRequest } from "@/types";
+import { Button, Flex, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
@@ -10,7 +8,7 @@ import { useMemo } from "react";
 import { useMutation } from "react-query";
 
 type EditModalProps = {
-  data: KstarCredential;
+  data: SiteRegionMapping;
   refetch?: () => void;
   isOpen: boolean;
   close: () => void;
@@ -20,14 +18,6 @@ const EditModal = ({ data, refetch, isOpen, close }: EditModalProps) => {
   const form = useForm({
     initialValues: data,
     validate: {
-      id: (value) => (value != data.id ? "ID cannot be changed" : null),
-      username: (value) => {
-        if (!value) return "Username is required";
-      },
-      password: (value) => {
-        if (!value) return "Password is required";
-      },
-      owner: (value) => validateOwner(value),
     },
   });
 
@@ -41,22 +31,22 @@ const EditModal = ({ data, refetch, isOpen, close }: EditModalProps) => {
   };
 
   // |=> DELETE
-  const { mutateAsync: deleteKstarCredential } = useMutation(
-    [`delete-kstar-credential-${data.id}`],
-    async () => await deleteKstarCredentialAPI(data.id),
+  const { mutateAsync: deleteCity } = useMutation(
+    [`delete-city-${data.id}`],
+    async () => await deleteCityAPI(data.id),
     {
       onSuccess: () => {
         refetch && refetch();
         notifications.show({
           title: "Successful",
-          message: "Credential deleted successfully",
+          message: "City deleted successfully",
           color: "green",
         });
       },
       onError: () => {
         notifications.show({
           title: "Failure",
-          message: "Failed to delete credential",
+          message: "Failed to delete city",
           color: "red",
         });
       },
@@ -66,47 +56,47 @@ const EditModal = ({ data, refetch, isOpen, close }: EditModalProps) => {
   const openDeleteModal = () => {
     onClose();
     modals.openConfirmModal({
-      title: "Delete Credential",
+      title: "Delete City",
       centered: true,
-      children: <Text>Are you sure you want to delete this credential?</Text>,
+      children: <Text>Are you sure you want to delete this city?</Text>,
       labels: { confirm: "Delete", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      onConfirm: async () => await deleteKstarCredential(),
+      onConfirm: async () => await deleteCity(),
     });
   };
 
   // |=> UPDATE
-  const { mutateAsync: updateKstarCredential } = useMutation(
+  const { mutateAsync: updateCity } = useMutation(
     [`update-kstar-credential-${data.id}`],
-    async (body: KstarCredential) => await updateKstarCredentialAPI(data.id, body),
+    async (body: UpdateCityRequest) => await updateCityAPI(data.id, body),
     {
       onSuccess: () => {
         refetch && refetch();
         notifications.show({
           title: "Successful",
-          message: "Credential updated successfully",
+          message: "City updated successfully",
           color: "green",
         });
       },
       onError: () => {
         notifications.show({
           title: "Failure",
-          message: "Failed to update credential",
+          message: "Failed to update city",
           color: "red",
         });
       },
     }
   );
 
-  const onUpdateKstarCredential = (body: KstarCredential) => {
+  const onUpdateKstarCredential = (body: UpdateCityRequest) => {
     onClose();
     modals.openConfirmModal({
-      title: "Update Credential",
+      title: "Update City",
       centered: true,
-      children: <Text>Are you sure you want to update this credential?</Text>,
+      children: <Text>Are you sure you want to update this city?</Text>,
       labels: { confirm: "Confirm", cancel: "Cancel" },
       confirmProps: { color: "green" },
-      onConfirm: async () => await updateKstarCredential(body),
+      onConfirm: async () => await updateCity(body),
     });
   };
 
@@ -125,20 +115,18 @@ const EditModal = ({ data, refetch, isOpen, close }: EditModalProps) => {
           />
 
           <TextInput
-            label="Username"
-            {...form.getInputProps("username")}
+            label="Code"
+            {...form.getInputProps("code")}
           />
 
           <TextInput
-            label="Password"
-            {...form.getInputProps("password")}
+            label="Name"
+            {...form.getInputProps("name")}
           />
 
-          <Select
-            label="Owner"
-            data={OwnerOptions}
-            searchable
-            {...form.getInputProps("owner")}
+          <TextInput
+            label="Area"
+            {...form.getInputProps("area")}
           />
 
           <Flex gap="xs">

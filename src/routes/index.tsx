@@ -6,6 +6,7 @@ import GrowattConfigPage from "@/pages/config/growatt";
 import HuaweiConfigPage from "@/pages/config/huawei";
 import KstarConfigPage from "@/pages/config/kstar";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
+import ProvinceConfigPage from "@/pages/config/province";
 import SolarmanConfigPage from "@/pages/config/solarman";
 import DailyProductionPage from "@/pages/dashboard/daily-production";
 import DataMonitoringPage from "@/pages/dashboard/data-monitoring";
@@ -67,7 +68,7 @@ const Routes = () => {
   const autoLogin = () => {
     if (!expired) return;
 
-    const expiredTime = new Date(expired).getTime()
+    const expiredTime = new Date(expired).getTime();
     if (Date.now() >= expiredTime) return;
 
     try {
@@ -202,6 +203,11 @@ const Routes = () => {
             <Route
               path="growatt"
               element={<GrowattConfigPage />}
+            />
+
+            <Route
+              path="province"
+              element={<ProvinceConfigPage />}
             />
           </Route>
         </Route>

@@ -66,7 +66,9 @@ export function LinksGroup({
             >
               <Icon size="1.1rem" />
             </ThemeIcon>
-            <Box ml="md">{label}</Box>
+            <Box ml="md">
+              <Text fz="md" fw="bold">{label}</Text>
+            </Box>
           </Box>
           {hasLinks && (
             <ChevronIcon
@@ -110,7 +112,7 @@ const useStyles = createStyles((theme) => ({
     padding: `${theme.spacing.xs} ${theme.spacing.md}`,
     paddingLeft: rem(31),
     marginLeft: rem(30),
-    fontSize: theme.fontSizes.sm,
+    fontSize: 15,
     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.colors.gray[7],
     borderLeft: `${rem(1)} solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
