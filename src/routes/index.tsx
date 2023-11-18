@@ -64,9 +64,12 @@ const Routes = () => {
   const [auth, setAuth] = useRecoilState(authState);
   const [expired] = useExpiredLocalStorage();
 
-  const autoLogin = async () => {
+  const autoLogin = () => {
     if (!expired) return;
-    if (Date.now() >= expired.getTime()) return;
+
+    const expiredTime = new Date(expired).getTime()
+    if (Date.now() >= expiredTime) return;
+
     try {
       getKibanaCredentialAPI()
         .then(async ({ data }) => {
@@ -116,7 +119,7 @@ const Routes = () => {
     const controller = new AbortController();
     autoLogin();
     return () => controller.abort();
-  }, []);
+  }, [expired]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
