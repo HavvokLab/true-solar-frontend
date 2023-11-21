@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import axios, { AxiosRequestConfig } from "axios";
 import { useMutation } from "react-query";
 import { useSetRecoilState } from "recoil";
 
