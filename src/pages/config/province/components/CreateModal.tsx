@@ -36,7 +36,7 @@ const CreateModal = ({ refetch, isOpen, close }: CreateModalProps) => {
     onError: () => {
       notifications.show({
         title: "Failure",
-        message: "Failed to create create",
+        message: "Failed to create city",
         color: "red",
       });
     },

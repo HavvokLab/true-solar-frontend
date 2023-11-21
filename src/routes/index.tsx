@@ -13,9 +13,11 @@ import DailyProductionPage from "@/pages/dashboard/daily-production";
 import DataMonitoringPage from "@/pages/dashboard/data-monitoring";
 import MonthlyProductionPage from "@/pages/dashboard/monthly-production";
 import PerformanceAlarmPage from "@/pages/dashboard/performance-alarm";
+import PlantPage from "@/pages/dashboard/plant";
 import ReportPage from "@/pages/dashboard/report";
 import SummaryPage from "@/pages/dashboard/summary";
 import NotFoundPage from "@/pages/not-found";
+import VendorPage from "@/pages/vendor";
 import { authState } from "@/store";
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
@@ -174,6 +176,16 @@ const Routes = () => {
           <Route
             path="data-monitoring"
             element={<DataMonitoringPage />}
+          />
+
+          <Route
+            path="plants"
+            element={<PlantPage />}
+          />
+
+          <Route
+            path="vendors"
+            element={<VendorPage />}
           />
 
           <Route

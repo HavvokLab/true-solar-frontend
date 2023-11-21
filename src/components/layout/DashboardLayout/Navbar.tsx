@@ -19,7 +19,7 @@ const data = [
     label: "Dashboard",
     icon: IconDeviceDesktopAnalytics,
     link: "/dashboard/summary",
-    initiallyOpened: true,
+    initiallyOpened: false,
     links: [
       { label: "Summary", link: "/dashboard/summary" },
       { label: "Performance Alarm", link: "/dashboard/performance-alarm" },
@@ -27,12 +27,13 @@ const data = [
       { label: "Daily Production", link: "/dashboard/daily-production" },
       { label: "Monthly Production", link: "/dashboard/monthly-production" },
       { label: "Data Monitoring", link: "/dashboard/data-monitoring" },
+      { label: "Plants", link: "/dashboard/plants" },
     ],
   },
   {
     label: "Configuration",
     icon: IconServerCog,
-    initiallyOpened: true,
+    initiallyOpened: false,
     link: "/dashboard/config/performance-alarm",
     links: [
       { label: "Performance Alarm", link: "/dashboard/config/performance-alarm" },
@@ -43,6 +44,12 @@ const data = [
       { label: "Province", link: "/dashboard/config/province" },
       { label: "Area", link: "/dashboard/config/area" },
     ],
+  },
+  {
+    label: "Vendors",
+    icon: IconServerCog,
+    initiallyOpened: true,
+    link: "/dashboard/vendors",
   },
 ];
 

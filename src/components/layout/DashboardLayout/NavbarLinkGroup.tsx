@@ -8,18 +8,15 @@ import {
   createStyles,
   rem,
 } from "@mantine/core";
-import {
-  IconChevronLeft,
-  IconChevronRight
-} from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 
 interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
   initiallyOpened?: boolean;
+  link: string;
   links?: { label: string; link: string }[];
 }
 
@@ -27,6 +24,7 @@ export function LinksGroup({
   icon: Icon,
   label,
   initiallyOpened,
+  link,
   links,
 }: LinksGroupProps) {
   const { classes, theme } = useStyles();
@@ -52,7 +50,12 @@ export function LinksGroup({
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)}
+        onClick={() => {
+          setOpened((o) => !o);
+          if (initiallyOpened) {
+            navigate(link);
+          }
+        }}
         className={classes.control}
       >
         <Group
@@ -67,7 +70,12 @@ export function LinksGroup({
               <Icon size="1.1rem" />
             </ThemeIcon>
             <Box ml="md">
-              <Text fz="md" fw="bold">{label}</Text>
+              <Text
+                fz="md"
+                fw="bold"
+              >
+                {label}
+              </Text>
             </Box>
           </Box>
           {hasLinks && (
