@@ -10,7 +10,7 @@ import {
   createStyles,
   rem,
 } from "@mantine/core";
-import { IconDeviceDesktopAnalytics, IconServerCog } from "@tabler/icons-react";
+import { IconDeviceDesktopAnalytics, IconScript, IconServerCog } from "@tabler/icons-react";
 import { useResetRecoilState } from "recoil";
 import { LinksGroup } from "./NavbarLinkGroup";
 
@@ -47,7 +47,7 @@ const data = [
   },
   {
     label: "Vendors",
-    icon: IconServerCog,
+    icon: IconScript,
     initiallyOpened: true,
     link: "/dashboard/vendors",
   },
