@@ -20,6 +20,7 @@ import NotFoundPage from "@/pages/not-found";
 import VendorPage from "@/pages/vendor";
 import { authState } from "@/store";
 import { notifications } from "@mantine/notifications";
+import axios, { AxiosRequestConfig } from "axios";
 import { useEffect } from "react";
 import {
   Navigate,
@@ -78,27 +79,27 @@ const Routes = () => {
         .then(async ({ data }) => {
           const kibanaResult = data.result;
           if (data.success && kibanaResult) {
-            // const config: AxiosRequestConfig = {
-            //   baseURL: "https://truesolar.truecorp.co.th",
-            //   method: "POST",
-            //   url: "/k/internal/security/login",
-            //   withCredentials: true,
-            //   headers: {
-            //     "kbn-xsrf": "true",
-            //     "Content-Type": "application/json",
-            //   },
-            //   data: {
-            //     providerType: "basic",
-            //     providerName: "basic",
-            //     currentURL: "/k/login?next=%2F",
-            //     params: {
-            //       username: kibanaResult.username,
-            //       password: kibanaResult.password,
-            //     },
-            //   },
-            // };
+            const config: AxiosRequestConfig = {
+              baseURL: "https://truesolar.truecorp.co.th",
+              method: "POST",
+              url: "/k/internal/security/login",
+              withCredentials: true,
+              headers: {
+                "kbn-xsrf": "true",
+                "Content-Type": "application/json",
+              },
+              data: {
+                providerType: "basic",
+                providerName: "basic",
+                currentURL: "/k/login?next=%2F",
+                params: {
+                  username: kibanaResult.username,
+                  password: kibanaResult.password,
+                },
+              },
+            };
 
-            // await axios.request(config);
+            await axios.request(config);
             setAuth(true);
           }
         })
