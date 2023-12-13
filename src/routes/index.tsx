@@ -100,7 +100,7 @@ const Routes = () => {
               },
             };
 
-            // await axios.request(config);
+            await axios.request(config);
             setAuth(true);
           }
         })
