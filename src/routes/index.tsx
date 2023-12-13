@@ -9,6 +9,7 @@ import KstarConfigPage from "@/pages/config/kstar";
 import PerformanceAlarmConfigPage from "@/pages/config/performance-alarm";
 import ProvinceConfigPage from "@/pages/config/province";
 import SolarmanConfigPage from "@/pages/config/solarman";
+import AlarmPage from "@/pages/dashboard/alarm";
 import DailyProductionPage from "@/pages/dashboard/daily-production";
 import DataMonitoringPage from "@/pages/dashboard/data-monitoring";
 import MonthlyProductionPage from "@/pages/dashboard/monthly-production";
@@ -99,7 +100,7 @@ const Routes = () => {
               },
             };
 
-            await axios.request(config);
+            // await axios.request(config);
             setAuth(true);
           }
         })
@@ -177,6 +178,11 @@ const Routes = () => {
           <Route
             path="data-monitoring"
             element={<DataMonitoringPage />}
+          />
+
+          <Route
+            path="alarm"
+            element={<AlarmPage />}
           />
 
           <Route

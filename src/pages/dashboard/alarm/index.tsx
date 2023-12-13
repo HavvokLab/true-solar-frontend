@@ -1,7 +1,7 @@
 import { Group, Paper, Stack, Title, createStyles } from "@mantine/core";
-import { summarySource } from "./data";
+import { alarmSource } from "./data";
 
-const SummaryPage = () => {
+const AlarmPage = () => {
   const { classes } = useStyles();
 
   return (
@@ -15,12 +15,12 @@ const SummaryPage = () => {
           px="sm"
           py="md"
         >
-          <Title>Summary Dashboard</Title>
+          <Title>Performance & Alarm Dashbaord</Title>
         </Group>
 
         <iframe
           className={classes.wrapper}
-          src={summarySource}
+          src={alarmSource}
         />
       </Stack>
     </Paper>
@@ -38,4 +38,4 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export default SummaryPage;
+export default AlarmPage;

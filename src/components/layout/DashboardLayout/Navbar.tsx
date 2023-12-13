@@ -27,6 +27,7 @@ const data = [
       { label: "Daily Production", link: "/dashboard/daily-production" },
       { label: "Monthly Production", link: "/dashboard/monthly-production" },
       { label: "Data Monitoring", link: "/dashboard/data-monitoring" },
+      { label: "Alarm", link: "/dashboard/alarm" },
       { label: "Plants", link: "/dashboard/plants" },
     ],
   },
