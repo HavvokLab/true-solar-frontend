@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios"
 import { fetchPrivate } from "."
-import { GetPlantResponse, Response } from "@/types"
+import { GetPlantResponse, Plant, Response } from "@/types"
 
 export const getPlantAPI = async (offset: number, limit: number) => {
     const conf: AxiosRequestConfig = {
@@ -10,6 +10,10 @@ export const getPlantAPI = async (offset: number, limit: number) => {
     }
 
     return await fetchPrivate.get<Response<GetPlantResponse>>("/plant", conf)
+}
+
+export const getAllPlantAPI = async() => {
+    return await fetchPrivate.get<Response<Plant[]>>("/plant/all")
 }
 
 export const deletePlantAPI = async (id: number) => {

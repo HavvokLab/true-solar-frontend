@@ -4,6 +4,7 @@ import { Divider, Group, Pagination, Paper, Stack, Table, Title } from "@mantine
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Row from "./components/Row";
+import ExportButton from "./components/ExportButton";
 
 const PlantPage = () => {
   const [offset, setOffset] = useState<number>(0);
@@ -38,6 +39,7 @@ const PlantPage = () => {
           align="center"
         >
           <Title fw={700}>Plant</Title>
+          <ExportButton/>
         </Group>
 
         <Divider />
